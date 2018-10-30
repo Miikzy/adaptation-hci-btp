@@ -123,26 +123,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public final void onSensorChanged(SensorEvent event) {
-//        lux = event.values[0];
-//        TextView current_lux_textview = (TextView) findViewById(R.id.actual_lux);
-//        current_lux_textview.setText(Float.toString(lux));
-//        TextView current_theme_textview = (TextView) findViewById(R.id.actual_theme);
-//        if (lux + 20 >= previous_lux || lux - 20 <= previous_lux) {
-//            previous_lux = lux;
-//            if (lux <= 60) {
-//                current_theme_textview.setText("Dark Theme");
-//                if (current_theme != R.style.AppTheme_Dark) {
-//                    current_theme = R.style.AppTheme_Dark;
-//                    MainActivity.this.recreate();
-//                }
-//            } else {
-//                current_theme_textview.setText("Light Theme");
-//                if (current_theme != R.style.AppTheme) {
-//                    current_theme = R.style.AppTheme;
-//                    MainActivity.this.recreate();
-//                }
-//            }
-//        }
+        lux = event.values[0];
+        TextView current_lux_textview = (TextView) findViewById(R.id.actual_lux);
+        current_lux_textview.setText(Float.toString(lux));
+        TextView current_theme_textview = (TextView) findViewById(R.id.actual_theme);
+        if (lux + 20 >= previous_lux || lux - 20 <= previous_lux) {
+            previous_lux = lux;
+            if (lux <= 60) {
+                current_theme_textview.setText("Dark Theme");
+                if (current_theme != R.style.AppTheme_Dark) {
+                    current_theme = R.style.AppTheme_Dark;
+                    MainActivity.this.recreate();
+                }
+            } else {
+                current_theme_textview.setText("Light Theme");
+                if (current_theme != R.style.AppTheme) {
+                    current_theme = R.style.AppTheme;
+                    MainActivity.this.recreate();
+                }
+            }
+        }
     }
 
     @Override
