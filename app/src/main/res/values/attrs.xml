@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AdaptableTheme">
+        <attr name="primaryTextColor" format="color"/>
+        <attr name="secondaryTextColor" format="color"/>
+        <attr name="dividerColor" format="color"/>
+        <attr name="backgroundCardColor" format="color"/>
+        <attr name ="colorPrimary" format="color"/>
+        <attr name="colorPrimaryDark" format="color"/>
+        <attr name="iconPlaceholder" format="integer"/>
+    </declare-styleable>
+</resources>
+
+<!-- Good way to create custom attribute -->
+<!-- source : https://medium.com/@elye.project/better-way-of-declaring-custom-view-attributes-23f876c28534 -->
+<!--
+<declare-styleable name="GlobalAttrDeclare">
+        <attr name="customAttr1" format="integer" />
+        <attr name="customAttr2" format="reference|string" />
+        <attr name="customAttr3">
+            <enum name="enum1" value="0" />
+            <enum name="enum2" value="1" />
+            <enum name="enum3" value="2" />
+            <enum name="enum4" value="3" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="CustomViewA">
+        <attr name="customAttr1" />
+        <attr name="customAttr2" />
+    </declare-styleable>
+    <declare-styleable name="CustomViewB">
+        <attr name="customAttr1" />
+        <attr name="customAttr3" />
+    </declare-styleable>
+
+-->
