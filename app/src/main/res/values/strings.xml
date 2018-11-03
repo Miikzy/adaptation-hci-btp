@@ -15,4 +15,5 @@
     <string name="lux_unit">lux</string>
     <string name="actual_theme_form">Le thème est :</string>
     <string name="informations_env">Informations sur l\'environnement</string>
+    <string name="light_sensor_handler">Activer le capteur de luminosité</string>
 </resources>

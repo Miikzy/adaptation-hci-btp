@@ -8,6 +8,8 @@
         <item name="colorAccent">#AD5E7B</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="primaryTextColor">#808080</item>
+
 
     </style>
 
@@ -26,8 +28,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:colorBackground">@color/background_material_light</item>
-        <item name="android:textColorPrimary">@color/text_color_primary</item>
+        <item name="primaryTextColor">@color/text_color_primary</item>
         <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:actionMenuTextColor">@color/text_color_primary</item>
+
     </style>
 
 </resources>

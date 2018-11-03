@@ -1,6 +1,7 @@
 package com.example.zaki_berouk.adaptabtp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,11 +17,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener  {
+        implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mLightSensor;
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private static float previous_lux = 0;
     private static int current_theme = R.style.AppTheme;
     private static boolean isNightMode = false;
+    private Switch sensor_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +58,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        sensor_btn = (Switch) findViewById(R.id.switch1);
+        sensor_btn.setChecked(false);
+
         // Get an instance of the sensor service, and use that to get an instance of
         // a particular sensor.
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+
+        sensor_btn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mSensorManager.registerListener(MainActivity.this, mLightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                } else {
+                    mSensorManager.unregisterListener(MainActivity.this, mLightSensor);
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -99,7 +120,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Intent intentStaff = new Intent(MainActivity.this, ContactActivity.class);
+            startActivity(intentStaff);
         } else if (id == R.id.nav_home) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -116,7 +138,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 
     //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,7 +175,10 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         // Register a listener for the sensor.
         super.onResume();
-        mSensorManager.registerListener(this, mLightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        if(sensor_btn.isChecked()){
+            mSensorManager.registerListener(this, mLightSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     @Override
@@ -162,10 +186,11 @@ public class MainActivity extends AppCompatActivity
         // Be sure to unregister the sensor when the activity pauses.
         super.onPause();
         mSensorManager.unregisterListener(this);
+
     }
 
-    public void changeTheme(boolean isNightMode){
-        if(isNightMode){
+    public void changeTheme(boolean isNightMode) {
+        if (isNightMode) {
             this.current_theme = R.style.AppTheme;
             this.isNightMode = !isNightMode;
 

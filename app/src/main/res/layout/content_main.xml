@@ -139,6 +139,14 @@
 
             </LinearLayout>
 
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/light_sensor_handler"
+                android:textColor="?attr/primaryTextColor"
+                />
+
         </LinearLayout>
     </ScrollView>
 
