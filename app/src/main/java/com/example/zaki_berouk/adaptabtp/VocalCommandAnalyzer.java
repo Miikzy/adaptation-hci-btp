@@ -31,7 +31,7 @@ public class VocalCommandAnalyzer {
         List<Staff> targets = new ArrayList<>();
 
         if (splitted_input[0].contains("alert") || splitted_input[0].contains("probl")) {
-            command = "Alerte !\n";
+            command = "Alerte";
             if (isArchitect) {
                 return new CommandProccessed(command, whole_staff, userInput);
             } else {

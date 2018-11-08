@@ -9,7 +9,7 @@ public class CommandProccessed {
     private List<Staff> targets;
     private String content;
 
-    public CommandProccessed() {
+    public CommandProccessed(){
 
     }
 

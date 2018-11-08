@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
@@ -32,6 +33,7 @@ import java.util.List;
 public class ContactActivity extends AppCompatActivity {
     private static final int SPEECH_REQUEST_CODE = 0;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+    private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
 
 
     @Override
@@ -51,7 +53,7 @@ public class ContactActivity extends AppCompatActivity {
         final Button button = findViewById(R.id.voice_btn);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               displaySpeechRecognizer();
+                displaySpeechRecognizer();
             }
         });
     }
@@ -76,20 +78,28 @@ public class ContactActivity extends AppCompatActivity {
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
             VocalCommandAnalyzer vca = new VocalCommandAnalyzer();
-            CommandProccessed cmd = vca.analyzeCommand(spokenText, ContactActivity.this, false);
+            CommandProccessed commandProccessed = vca.analyzeCommand(spokenText, ContactActivity.this, false);
 
-            if(checkForPermission() && cmd != null){
-                if(cmd.getCommand().equals("Message") || cmd.getCommand().equals("Alerte")){
-                    String msg = cmd.getContent();
-                    String tar = cmd.getTargets().get(0).getPhone();
-                    PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, ContactActivity.class), 0);
-                    SmsManager sms = SmsManager.getDefault();
-                    sms.sendTextMessage(tar, null, msg, pi, null);
+            if (commandProccessed != null) {
+                String cmd = commandProccessed.getCommand();
+                if (checkForPermission(commandProccessed.getCommand())) {
+                    if (cmd.equals("Message") ||cmd.equals("Alerte")) {
+                        String msg = commandProccessed.getContent();
+                        String tar = commandProccessed.getTargets().get(0).getPhone();
+                        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, ContactActivity.class), 0);
+                        SmsManager sms = SmsManager.getDefault();
+                        sms.sendTextMessage(tar, null, msg, pi, null);
+                    } else if(cmd.equals("Appel")){
+                        String tar = commandProccessed.getTargets().get(0).getPhone();
+                        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tar)));
+
+                    }
+
+                } else {
+                    requestPermission(commandProccessed.getCommand());
                 }
-
-            } else {
-                requestPermission();
             }
+
 
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -107,20 +117,36 @@ public class ContactActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.SEND_SMS},
                     MY_PERMISSIONS_REQUEST_SEND_SMS);
         }
+    }
+
+    private Boolean checkForPermission(String cmd) {
+        if (cmd.equals("Message") || cmd.equals("Alerte")) {
+            int result = ContextCompat.checkSelfPermission(ContactActivity.this, Manifest.permission.SEND_SMS);
+            if (result == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (cmd.equals("Appel")) {
+            int result = ContextCompat.checkSelfPermission(ContactActivity.this, Manifest.permission.CALL_PHONE);
+            if (result == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
 
     }
 
-    private Boolean checkForPermission() {
-        int result = ContextCompat.checkSelfPermission(ContactActivity.this, Manifest.permission.SEND_SMS);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
+    private void requestPermission(String cmd) {
+        if (cmd.equals("Message") || cmd.equals("Alerte")) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+        }
+        if (cmd.equals("Appel")) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
         }
     }
 
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
-    }
 
 }
