@@ -1,20 +1,28 @@
 package com.example.zaki_berouk.adaptabtp;
 
+import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.zaki_berouk.adaptabtp.Adapter.StaffAdapter;
 import com.example.zaki_berouk.adaptabtp.Adapter.StaffAdapterLV;
+import com.example.zaki_berouk.adaptabtp.VocalCommand.CommandProccessed;
 import com.example.zaki_berouk.adaptabtp.mocked_data.StaffSetter;
 import com.example.zaki_berouk.adaptabtp.model.Staff;
 
@@ -23,6 +31,8 @@ import java.util.List;
 
 public class ContactActivity extends AppCompatActivity {
     private static final int SPEECH_REQUEST_CODE = 0;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,7 @@ public class ContactActivity extends AppCompatActivity {
         StaffAdapterLV adapter = new StaffAdapterLV(getApplicationContext(), R.layout.staff_list_item, staff);
         ListView list_staff = (ListView) findViewById(R.id.staffAll);
         list_staff.setAdapter(adapter);
+        checkPermission();
 
         final Button button = findViewById(R.id.voice_btn);
         button.setOnClickListener(new View.OnClickListener() {
@@ -64,8 +75,52 @@ public class ContactActivity extends AppCompatActivity {
             List<String> results = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             String spokenText = results.get(0);
-            System.out.println("\n*\n*" + spokenText + "\n*\n*");
+            VocalCommandAnalyzer vca = new VocalCommandAnalyzer();
+            CommandProccessed cmd = vca.analyzeCommand(spokenText, ContactActivity.this, false);
+
+            if(checkForPermission() && cmd != null){
+                if(cmd.getCommand().equals("Message") || cmd.getCommand().equals("Alerte")){
+                    String msg = cmd.getContent();
+                    String tar = cmd.getTargets().get(0).getPhone();
+                    PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, ContactActivity.class), 0);
+                    SmsManager sms = SmsManager.getDefault();
+                    sms.sendTextMessage(tar, null, msg, pi, null);
+                }
+
+            } else {
+                requestPermission();
+            }
+
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void checkPermission() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // Permission not yet granted. Use requestPermissions().
+            // MY_PERMISSIONS_REQUEST_SEND_SMS is an
+            // app-defined int constant. The callback method gets the
+            // result of the request.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+        }
+
+    }
+
+    private Boolean checkForPermission() {
+        int result = ContextCompat.checkSelfPermission(ContactActivity.this, Manifest.permission.SEND_SMS);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+    }
+
 }

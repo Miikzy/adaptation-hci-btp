@@ -146,8 +146,10 @@ public class MainActivity extends AppCompatActivity
     public final void onSensorChanged(SensorEvent event) {
         lux = event.values[0];
         TextView current_lux_textview = (TextView) findViewById(R.id.actual_lux);
-        current_lux_textview.setText(Float.toString(lux));
         TextView current_theme_textview = (TextView) findViewById(R.id.actual_theme);
+
+        current_lux_textview.setText(Float.toString(lux));
+
         if (lux + 20 >= previous_lux || lux - 20 <= previous_lux) {
             previous_lux = lux;
             if (lux <= 60) {
