@@ -33,16 +33,18 @@ public class VocalCommandAnalyzer {
         if (splitted_input[0].contains("alert") || splitted_input[0].contains("probl")) {
             command = "Alerte";
             if (isArchitect) {
-                return new CommandProccessed(command, whole_staff, userInput);
+                String message = "AdaptaBTP !!" + userInput
+                        + "!! from: Zaki, artiste faience de toilette";
+                return new CommandProccessed(command, whole_staff, message);
             } else {
                 for (Staff s : whole_staff) {
                     if (s.getRole().contains("Architect")) {
                         targets.add(s);
                     }
                 }
-                String message = "AdaptaBTP - Rénovation Bâtiment Ouest @Sophiatech : \n ** ALERTE ** \n" + userInput
-                        + "\n - Zaki, artiste faïence de toilette";
-                return new CommandProccessed(command, targets, userInput);
+                String message = "AdaptaBTP !!" + userInput
+                        + "!! from: Zaki, artiste faience de toilette";
+                return new CommandProccessed(command, targets, message);
             }
         } else if (splitted_input[0].contains("message") || splitted_input[0].contains("text")) {
             command = "Message";

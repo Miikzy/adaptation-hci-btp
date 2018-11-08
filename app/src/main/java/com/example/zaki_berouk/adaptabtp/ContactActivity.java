@@ -83,13 +83,21 @@ public class ContactActivity extends AppCompatActivity {
             if (commandProccessed != null) {
                 String cmd = commandProccessed.getCommand();
                 if (checkForPermission(commandProccessed.getCommand())) {
-                    if (cmd.equals("Message") ||cmd.equals("Alerte")) {
+                    if (cmd.equals("Message")) {
                         String msg = commandProccessed.getContent();
                         String tar = commandProccessed.getTargets().get(0).getPhone();
                         PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, ContactActivity.class), 0);
                         SmsManager sms = SmsManager.getDefault();
                         sms.sendTextMessage(tar, null, msg, pi, null);
-                    } else if(cmd.equals("Appel")){
+                    } else if(cmd.equals("Alerte")){
+                        String msg = commandProccessed.getContent();
+                        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, ContactActivity.class), 0);
+                        SmsManager sms = SmsManager.getDefault();
+                        for(Staff s : commandProccessed.getTargets()){
+                            sms.sendTextMessage(s.getPhone(), null, msg, pi, null);
+                        }
+                    }
+                    else if(cmd.equals("Appel")){
                         String tar = commandProccessed.getTargets().get(0).getPhone();
                         startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tar)));
 
