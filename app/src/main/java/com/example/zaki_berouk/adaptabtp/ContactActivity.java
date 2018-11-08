@@ -10,24 +10,17 @@ import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.zaki_berouk.adaptabtp.Adapter.StaffAdapter;
 import com.example.zaki_berouk.adaptabtp.Adapter.StaffAdapterLV;
 import com.example.zaki_berouk.adaptabtp.VocalCommand.CommandProccessed;
 import com.example.zaki_berouk.adaptabtp.mocked_data.StaffSetter;
 import com.example.zaki_berouk.adaptabtp.model.Staff;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContactActivity extends AppCompatActivity {
@@ -40,6 +33,9 @@ public class ContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         List<Staff> staff;
         StaffSetter staffSetter = new StaffSetter();
